@@ -1,0 +1,18 @@
+package andersen.lab.eshop.repository;
+
+import andersen.lab.eshop.domain.product.Category;
+import andersen.lab.eshop.domain.product.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    Optional<Product> findByName(String name);
+
+    List<Product> findAllByCategory_Name(String name);
+
+}
