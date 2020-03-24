@@ -4,10 +4,9 @@ import andersen.lab.eshop.domain.cart.Cart;
 import andersen.lab.eshop.domain.cart.CartItem;
 import andersen.lab.eshop.domain.product.Product;
 import andersen.lab.eshop.exception.EntityNotFoundException;
-import andersen.lab.eshop.repository.CartRepository;
+import andersen.lab.eshop.repository.jdbc.CartRepository;
 import andersen.lab.eshop.service.CartService;
 import andersen.lab.eshop.util.CartPriceCounter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -17,13 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class CartServiceImpl implements CartService {
 
-    private CartRepository cartRepository;
-
-    @Autowired
-    public CartServiceImpl(CartRepository cartRepository) {
-        this.cartRepository = cartRepository;
-    }
-
     @Override
     public Cart addToCart(Cart cart, Product product) {
         CartItem cartItem = new CartItem();
@@ -32,14 +24,14 @@ public class CartServiceImpl implements CartService {
         if(cartItems != null) {
             cartItems.add(cartItem);
             cart.setTotalPrice(CartPriceCounter.recountPrice(cart, cartItem));
-            return cartRepository.save(cart);
+            return CartRepository.save(cart);
         }
         return cart;
     }
 
     @Override
     public Cart removeFromCart(Cart cart, CartItem cartItem) {
-        Cart updatedCart = cartRepository
+        Cart updatedCart = CartRepository
                 .findById(cart.getId())
                 .orElseThrow(EntityNotFoundException::new);
         List<CartItem> cartItems = updatedCart.getCartItems();
@@ -52,7 +44,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<Product> getCartProducts(Long cartId) {
-        Cart cart = cartRepository.findById(cartId).orElseThrow(EntityNotFoundException::new);
+        Cart cart = CartRepository.findById(cartId).orElseThrow(EntityNotFoundException::new);
         List<CartItem> cartItems = cart.getCartItems();
         if(cartItems != null) {
             return cartItems.stream().map(CartItem::getProduct).collect(Collectors.toList());
