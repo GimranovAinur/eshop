@@ -1,10 +1,10 @@
 package andersen.lab.eshop.domain;
 
+import andersen.lab.eshop.domain.cart.Cart;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * Клиент магазина.
@@ -12,7 +12,9 @@ import java.util.List;
 @Entity
 @Table(name = "customers")
 @Data
-public class Customer {
+public class Customer implements Serializable {
+
+    private static final long serialVersionUID = -1931664796491144385L;
 
     @Id
     @GeneratedValue
@@ -26,7 +28,7 @@ public class Customer {
     @Column
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cart> carts = new ArrayList<>();
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
 }

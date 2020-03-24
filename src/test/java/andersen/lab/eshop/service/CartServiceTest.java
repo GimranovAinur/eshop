@@ -1,12 +1,11 @@
 package andersen.lab.eshop.service;
 
-import andersen.lab.eshop.domain.Cart;
-import andersen.lab.eshop.domain.CartItem;
+import andersen.lab.eshop.domain.cart.Cart;
+import andersen.lab.eshop.domain.cart.CartItem;
 import andersen.lab.eshop.domain.Customer;
 import andersen.lab.eshop.domain.product.Product;
 import andersen.lab.eshop.exception.EntityNotFoundException;
 import andersen.lab.eshop.repository.CartRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -36,9 +36,7 @@ public class ProductServiceImpl implements ProductService {
         sb.append("id: ").append(product.getId()).append("\n")
                 .append("name: ").append(product.getName()).append("\n")
                 .append("category: ").append(product.getCategory()).append("\n")
-                .append("price: ").append(product.getPrice()).append("\n")
-                .append("stock: ").append(product.getStock()).append("\n")
-                .append("measure: ").append(product.getMeasure());
+                .append("price: ").append(product.getPrice()).append("\n");
         return sb.toString();
     }
 }

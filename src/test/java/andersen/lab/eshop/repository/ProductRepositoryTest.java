@@ -34,8 +34,6 @@ public class ProductRepositoryTest {
         testData.setName("Тестовый продукт");
         testData.setCategory(category);
         testData.setPrice(1000.0);
-        testData.setStock(5);
-        testData.setMeasure("кг");
         productRepository.save(testData);
     }
 
@@ -44,8 +42,6 @@ public class ProductRepositoryTest {
         Product product = new Product();
         product.setName("Тестовый продукт");
         product.setPrice(1000.0);
-        product.setStock(5);
-        product.setMeasure("кг");
         assertThat(product, notNullValue());
         productRepository.delete(product);
     }
