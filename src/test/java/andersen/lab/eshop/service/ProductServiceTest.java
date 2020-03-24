@@ -35,8 +35,6 @@ public class ProductServiceTest {
         product.setName("Тестовый продукт");
         product.setCategory(category);
         product.setPrice(1000.0);
-        product.setStock(5);
-        product.setMeasure("кг");
         when(productRepository.findById(any(Long.class))).thenReturn(Optional.of(product));
     }
 

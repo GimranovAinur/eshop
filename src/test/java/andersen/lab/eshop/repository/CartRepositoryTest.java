@@ -1,9 +1,8 @@
 package andersen.lab.eshop.repository;
 
-import andersen.lab.eshop.domain.Cart;
-import andersen.lab.eshop.domain.CartItem;
+import andersen.lab.eshop.domain.cart.Cart;
+import andersen.lab.eshop.domain.cart.CartItem;
 import andersen.lab.eshop.domain.Customer;
-import andersen.lab.eshop.domain.product.Category;
 import andersen.lab.eshop.domain.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
