@@ -27,7 +27,7 @@ public class CartItem implements Serializable {
 
     /** Количество */
     @Column(columnDefinition = "integer default '1'")
-    private Integer amount;
+    private Integer amount = 0;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

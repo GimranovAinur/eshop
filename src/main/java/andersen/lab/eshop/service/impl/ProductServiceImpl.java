@@ -11,7 +11,6 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-
     @Override
     public List<Product> getProductList() {
         return ProductRepository.findAll();

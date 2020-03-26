@@ -3,7 +3,9 @@ package andersen.lab.eshop.service.impl;
 import andersen.lab.eshop.domain.cart.Cart;
 import andersen.lab.eshop.domain.cart.CartItem;
 import andersen.lab.eshop.domain.product.Product;
+import andersen.lab.eshop.exception.DatabaseException;
 import andersen.lab.eshop.exception.EntityNotFoundException;
+import andersen.lab.eshop.repository.jdbc.CartItemRepository;
 import andersen.lab.eshop.repository.jdbc.CartRepository;
 import andersen.lab.eshop.service.CartService;
 import andersen.lab.eshop.util.CartPriceCounter;
@@ -17,16 +19,18 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     @Override
-    public Cart addToCart(Cart cart, Product product) {
-        CartItem cartItem = new CartItem();
-        cartItem.setProduct(product);
+    public void addToCart(Cart cart, CartItem cartItem) {
         List<CartItem> cartItems = cart.getCartItems();
         if(cartItems != null) {
             cartItems.add(cartItem);
             cart.setTotalPrice(CartPriceCounter.recountPrice(cart, cartItem));
-            return CartRepository.save(cart);
+            try {
+                CartRepository.updateCart(cart);
+                CartItemRepository.saveCartItem(cartItem, cart.getId());
+            } catch (DatabaseException e) {
+                System.err.println(e.getMessage());
+            }
         }
-        return cart;
     }
 
     @Override

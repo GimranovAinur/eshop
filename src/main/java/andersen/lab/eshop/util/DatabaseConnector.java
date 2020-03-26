@@ -8,7 +8,7 @@ public class DatabaseConnector {
 
     private final static String CONNECTION_URI = "jdbc:postgresql://localhost:5432/";
 
-    private final static String DB_NAME = "bookshelf";
+    private final static String DB_NAME = "eshop";
 
     private final static String LOGIN = "postgres";
 
@@ -19,8 +19,10 @@ public class DatabaseConnector {
     public static Connection getConnection() {
         if (conn == null) {
             try {
+                Class.forName("org.postgresql.Driver");
                 conn = DriverManager.getConnection(CONNECTION_URI + DB_NAME, LOGIN, PASSWORD);
-            } catch (SQLException e) {
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
                 System.err.println("Не удалось подключиться к базе данных: " + e.getMessage());
             }
         }

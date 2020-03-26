@@ -1,9 +1,9 @@
 package andersen.lab.eshop.domain.product;
 
-import andersen.lab.eshop.domain.product.Product;
 import lombok.Data;
 
 import javax.persistence.*;
+
 
 @Entity
 @Data
@@ -26,3 +26,4 @@ public class Warehouse {
     private String measure;
 
 }
+

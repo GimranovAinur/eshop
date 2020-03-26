@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CartService {
 
-    Cart addToCart(Cart cart, Product product);
+    void addToCart(Cart cart, CartItem cartItem);
 
     Cart removeFromCart(Cart cart, CartItem cartItem);
 

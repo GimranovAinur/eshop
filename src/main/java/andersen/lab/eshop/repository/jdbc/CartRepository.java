@@ -1,9 +1,10 @@
 package andersen.lab.eshop.repository.jdbc;
 
-import andersen.lab.eshop.domain.Customer;
+import andersen.lab.eshop.domain.User;
 import andersen.lab.eshop.domain.cart.Cart;
 import andersen.lab.eshop.domain.cart.CartItem;
 import andersen.lab.eshop.domain.product.Product;
+import andersen.lab.eshop.exception.DatabaseException;
 import andersen.lab.eshop.exception.EntityNotFoundException;
 import andersen.lab.eshop.model.Currency;
 import andersen.lab.eshop.util.DatabaseConnector;
@@ -17,23 +18,22 @@ import java.util.Optional;
 public class CartRepository {
 
     private static final String CREATE =
-            "INSERT INTO carts (currency, total_price, customer_id) VALUES (?, ?, ?)";
+            "INSERT INTO carts (currency, total_price, user_id) VALUES (?, ?, ?)";
 
-    private static final String CREATE_CART_ITEM =
-            "INSERT INTO cart_items (amount, cart_id, product_id) VALUES (?, ?, ?)";
+    private static final String UPDATE_CART = "UPDATE carts SET currency = ?, total_price = ?";
 
     private static final String READ = "SELECT * FROM carts WHERE id = ?";
 
-    private static final String READ_CART_ITEMS = "SELECT * FROM cart_items WHERE cart_id = ?";
+    private static final String READ_BY_USER = "SELECT * FROM carts WHERE user_id = ?";
 
-    public static Cart save(Cart cart) {
+    public static Cart save(Cart cart) throws DatabaseException {
         try {
             Connection conn = DatabaseConnector.getConnection();
             PreparedStatement statement =
                     conn.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, cart.getCurrency().name());
             statement.setDouble(2, cart.getTotalPrice());
-            statement.setLong(3, cart.getCustomer().getId());
+            statement.setLong(3, cart.getUser().getId());
             statement.executeUpdate();
             ResultSet result = statement.getGeneratedKeys();
             Long id = null;
@@ -42,35 +42,25 @@ public class CartRepository {
             }
             cart.setId(id);
             for(CartItem cartItem : cart.getCartItems()) {
-                saveCartItem(cartItem);
+                CartItemRepository.saveCartItem(cartItem, cart.getId());
             }
             return cart;
         } catch (SQLException e) {
-            System.err.println("Ошибка сохранения литературы: " + e.getMessage());
+            throw new DatabaseException("Не удалось сохранить корзину");
         }
-        return null;
     }
 
-    public static Long saveCartItem(CartItem cartItem) {
+    public static void updateCart(Cart cart) throws DatabaseException {
         try {
             Connection conn = DatabaseConnector.getConnection();
             PreparedStatement statement =
-                    conn.prepareStatement(CREATE_CART_ITEM, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, cartItem.getAmount());
-            statement.setLong(2, cartItem.getCart().getId());
-            statement.setLong(3, cartItem.getProduct().getId());
+                    conn.prepareStatement(UPDATE_CART, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, cart.getCurrency().name());
+            statement.setDouble(2, cart.getTotalPrice());
             statement.executeUpdate();
-            ResultSet result = statement.getGeneratedKeys();
-            Long id = null;
-            if (result.next()) {
-                id = result.getLong(1);
-            }
-            cartItem.setId(id);
-            return id;
         } catch (SQLException e) {
-            System.err.println("Ошибка сохранения литературы: " + e.getMessage());
+            throw new DatabaseException("Не удалось обновить корзину");
         }
-        return null;
     }
 
     public static Optional<Cart> findById(Long id) {
@@ -87,42 +77,41 @@ public class CartRepository {
                 cart.setId(cart_id);
                 cart.setCurrency(Currency.RUB);
                 cart.setTotalPrice(price);
-                cart.setCustomer(new Customer());
-                cart.setCartItems(findCartItems(cart));
+                cart.setUser(new User());
+                cart.setCartItems(CartItemRepository.findCartItems(cart));
 
                 return Optional.of(cart);
             }
         } catch (SQLException e) {
-            System.err.println("Не удалось найти автора: " + e.getMessage());
+            System.err.println("Не удалось найти корзину: " + e.getMessage());
         }
         return Optional.empty();
     }
 
-    public static List<CartItem> findCartItems(Cart cart) {
+    public static Optional<Cart> findByUserId(Long userId) {
         try {
             Connection conn = DatabaseConnector.getConnection();
-            PreparedStatement statement = conn.prepareStatement(READ_CART_ITEMS);
-            statement.setLong(1, cart.getId());
+            PreparedStatement statement = conn.prepareStatement(READ_BY_USER);
+            statement.setLong(1, userId);
             ResultSet result = statement.executeQuery();
-            List<CartItem> cartItems = new ArrayList<>();
-            while (result.next()) {
-                Long id = result.getLong(1);
-                Integer amount = result.getInt(2);
-                Long productId = result.getLong(4);
-                Product product = ProductRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+            if (result.next()) {
+                Long cart_id = result.getLong(1);
+                Double price = result.getDouble(3);
 
-                CartItem cartItem = new CartItem();
-                cartItem.setId(id);
-                cartItem.setAmount(amount);
-                cartItem.setCart(cart);
-                cartItem.setProduct(product);
-                cartItems.add(cartItem);
+                Cart cart = new Cart();
+                cart.setId(cart_id);
+                cart.setCurrency(Currency.RUB);
+                cart.setTotalPrice(price);
+                cart.setCartItems(CartItemRepository.findCartItems(cart));
+
+                return Optional.of(cart);
             }
-            return cartItems;
         } catch (SQLException e) {
-            System.err.println("Не удалось найти автора: " + e.getMessage());
+            System.err.println("Не удалось найти корзину: " + e.getMessage());
         }
-        return Collections.emptyList();
+        return Optional.empty();
     }
+
+
 
 }

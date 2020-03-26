@@ -39,7 +39,8 @@ public class ProductRepository {
                 return Optional.of(product);
             }
         } catch (SQLException e) {
-            System.err.println("Не удалось найти автора: " + e.getMessage());
+            e.printStackTrace();
+            System.err.println("Не удалось найти продукт: " + e.getMessage());
         }
         return Optional.empty();
     }
@@ -67,7 +68,8 @@ public class ProductRepository {
             }
             return products;
         } catch (SQLException e) {
-            System.err.println("Не удалось найти автора: " + e.getMessage());
+            e.printStackTrace();
+            System.err.println("Не удалось найти продукт: " + e.getMessage());
         }
         return Collections.emptyList();
     }

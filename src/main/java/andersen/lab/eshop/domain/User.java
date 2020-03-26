@@ -10,9 +10,9 @@ import java.io.Serializable;
  * Клиент магазина.
  */
 @Entity
-@Table(name = "customers")
+@Table(name = "users")
 @Data
-public class Customer implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = -1931664796491144385L;
 
@@ -28,7 +28,7 @@ public class Customer implements Serializable {
     @Column
     private String password;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
 }

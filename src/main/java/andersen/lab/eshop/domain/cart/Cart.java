@@ -1,6 +1,6 @@
 package andersen.lab.eshop.domain.cart;
 
-import andersen.lab.eshop.domain.Customer;
+import andersen.lab.eshop.domain.User;
 import andersen.lab.eshop.model.Currency;
 import lombok.Data;
 
@@ -25,12 +25,12 @@ public class Cart implements Serializable {
 
     /** Покупатель */
     @OneToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     /** Полная стоймость */
     @Column(name = "total_price")
-    private Double totalPrice;
+    private Double totalPrice = 0.0;
 
     /** Валюта */
     @Enumerated(EnumType.STRING)
