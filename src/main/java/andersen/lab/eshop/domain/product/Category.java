@@ -3,6 +3,8 @@ package andersen.lab.eshop.domain.product;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +13,9 @@ import java.util.List;
 @Entity
 @Table(name = "categories")
 @Data
-public class Category {
+public class Category implements Serializable {
+
+    private static final long serialVersionUID = 6448699468062622145L;
 
     @Id
     @GeneratedValue
@@ -22,6 +26,6 @@ public class Category {
 
     /** Продукты из категории */
     @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
 }

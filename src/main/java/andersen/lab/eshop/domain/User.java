@@ -1,18 +1,20 @@
 package andersen.lab.eshop.domain;
 
+import andersen.lab.eshop.domain.cart.Cart;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * Клиент магазина.
  */
 @Entity
-@Table(name = "customers")
+@Table(name = "users")
 @Data
-public class Customer {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -1931664796491144385L;
 
     @Id
     @GeneratedValue
@@ -26,7 +28,7 @@ public class Customer {
     @Column
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cart> carts = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
 }
